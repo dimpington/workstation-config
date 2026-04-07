@@ -11,7 +11,6 @@ fd-find
 bat
 zsh
 kitty
-starship
 podman
 virt-manager
 virt-install
@@ -19,3 +18,4 @@ qemu-kvm
 libvirt
 libvirt-daemon-config-network
 libvirt-daemon-kvm
+code
