@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-REPO_DIR="$HOME/workstation-config"
+DOTFILES_REPO="https://github.com/dimpington/dotfiles.git"
 DOTFILES_DIR="$HOME/dotfiles"
+BACKUP_DIR="$HOME/config-backup"
+WORKSTATION_DIR="$HOME/workstation-config"
 
 backup_and_link() {
   local source="$1"
@@ -11,10 +13,9 @@ backup_and_link() {
   mkdir -p "$(dirname "$target")"
 
   if [ -e "$target" ] && [ ! -L "$target" ]; then
-    local backup_dir="$HOME/config-backup"
-    mkdir -p "$backup_dir"
-    mv "$target" "$backup_dir/$(basename "$target").backup.$(date +%Y%m%d-%H%M%S)"
-    echo "Backed up $target to $backup_dir"
+    mkdir -p "$BACKUP_DIR"
+    mv "$target" "$BACKUP_DIR/$(basename "$target").backup.$(date +%Y%m%d-%H%M%S)"
+    echo "Backed up $target to $BACKUP_DIR"
   fi
 
   ln -sfn "$source" "$target"
@@ -23,9 +24,20 @@ backup_and_link() {
 
 echo "== Starting workstation bootstrap =="
 
-cd "$REPO_DIR"
+if ! command -v git >/dev/null 2>&1; then
+  echo "== Git not found, installing =="
+  sudo dnf install -y git
+fi
+
+if [ ! -d "$DOTFILES_DIR/.git" ]; then
+  echo "== Cloning dotfiles repository =="
+  git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+else
+  echo "== Dotfiles repo already exists at $DOTFILES_DIR =="
+fi
 
 echo "== Running setup script =="
+cd "$WORKSTATION_DIR"
 ./setup.sh
 
 echo "== Linking dotfiles =="
@@ -38,4 +50,7 @@ chmod 700 "$HOME/.ssh"
 chmod 600 "$HOME/.ssh/config"
 
 echo "== Bootstrap complete =="
-echo "Log out and back in if needed, then restore personal data and SSH keys from backup."
+echo "Next steps:"
+echo "1. Log out and back in if needed"
+echo "2. Restore personal files and SSH keys from backup"
+echo "3. Test git, starship, podman, and virt-manager"
