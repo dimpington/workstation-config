@@ -100,6 +100,12 @@ echo "== Linking dotfiles =="
 backup_and_link "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 backup_and_link "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
 
+mkdir -p "$HOME/.config"
+
+if [ -f "$DOTFILES_DIR/.config/starship.toml" ]; then
+  backup_and_link "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
+fi
+
 install_vscode_extensions
 
 echo "== Bootstrap complete =="
