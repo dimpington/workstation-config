@@ -18,4 +18,3 @@ qemu-kvm
 libvirt
 libvirt-daemon-config-network
 libvirt-daemon-kvm
-code

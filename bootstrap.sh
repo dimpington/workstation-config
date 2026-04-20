@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 DOTFILES_REPO="git@github.com:dimpington/dotfiles.git"
 DOTFILES_DIR="$HOME/dotfiles"
 BACKUP_DIR="$HOME/config-backup"
 WORKSTATION_DIR="$HOME/workstation-config"
+LOG_DIR="$HOME/workstation-logs"
+LOG_FILE="$LOG_DIR/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+
+mkdir -p "$LOG_DIR"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "== Starting workstation bootstrap =="
+echo "== Log file: $LOG_FILE =="
 
 # -------------------------
 # SSH Key Check
 # -------------------------
 if [ ! -f "$HOME/.ssh/id_ed25519.pub" ]; then
   echo "SSH key not found."
-  echo "Generate one with:"
-  echo "  ssh-keygen -t ed25519 -C \edaunfelt@protonmail.com\""
+  echo 'Generate one with:'
+  echo '  ssh-keygen -t ed25519 -C "edaunfelt@protonmail.com"'
   echo "Then add it to GitHub before running bootstrap."
   exit 1
 fi
@@ -35,6 +43,7 @@ backup_and_link() {
 
 install_vscode() {
   echo "== Installing VS Code repository =="
+
   sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 
   sudo tee /etc/yum.repos.d/vscode.repo > /dev/null <<'EOF'
@@ -59,7 +68,8 @@ install_core_packages() {
     curl \
     wget \
     zsh \
-    podman
+    podman \
+    flatpak
 }
 
 install_vscode_extensions() {
@@ -80,8 +90,6 @@ install_vscode_extensions() {
   done
 }
 
-echo "== Starting workstation bootstrap =="
-
 install_core_packages
 install_vscode
 
@@ -92,9 +100,9 @@ else
   echo "== Dotfiles repo already exists at $DOTFILES_DIR =="
 fi
 
-echo "== Running setup script =="
+echo "== Running setup.sh =="
 cd "$WORKSTATION_DIR"
-./setup.sh
+bash ./setup.sh
 
 echo "== Linking dotfiles =="
 backup_and_link "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
@@ -109,3 +117,4 @@ fi
 install_vscode_extensions
 
 echo "== Bootstrap complete =="
+echo "== See log: $LOG_FILE =="
