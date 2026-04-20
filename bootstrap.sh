@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
 set -e
 
-DOTFILES_REPO="https://github.com/dimpington/dotfiles.git"
+DOTFILES_REPO="git@github.com:dimpington/dotfiles.git"
 DOTFILES_DIR="$HOME/dotfiles"
 BACKUP_DIR="$HOME/config-backup"
 WORKSTATION_DIR="$HOME/workstation-config"
+
+# -------------------------
+# SSH Key Check
+# -------------------------
+if [ ! -f "$HOME/.ssh/id_ed25519.pub" ]; then
+  echo "SSH key not found."
+  echo "Generate one with:"
+  echo "  ssh-keygen -t ed25519 -C \edaunfelt@protonmail.com\""
+  echo "Then add it to GitHub before running bootstrap."
+  exit 1
+fi
 
 backup_and_link() {
   local source="$1"
@@ -22,12 +33,57 @@ backup_and_link() {
   echo "Linked $target -> $source"
 }
 
+install_vscode() {
+  echo "== Installing VS Code repository =="
+  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+  sudo tee /etc/yum.repos.d/vscode.repo > /dev/null <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+autorefresh=1
+type=rpm-md
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
+
+  echo "== Installing VS Code =="
+  sudo dnf install -y code
+}
+
+install_core_packages() {
+  echo "== Installing core packages =="
+  sudo dnf install -y \
+    git \
+    curl \
+    wget \
+    zsh \
+    podman
+}
+
+install_vscode_extensions() {
+  echo "== Installing VS Code extensions =="
+
+  local extensions=(
+    ms-azuretools.vscode-containers
+    ms-azuretools.vscode-docker
+    ms-vscode-remote.remote-ssh
+    ms-vscode-remote.remote-ssh-edit
+    ms-vscode-remote.remote-containers
+    ms-vscode.remote-explorer
+    redhat.vscode-yaml
+  )
+
+  for ext in "${extensions[@]}"; do
+    code --install-extension "$ext" || true
+  done
+}
+
 echo "== Starting workstation bootstrap =="
 
-if ! command -v git >/dev/null 2>&1; then
-  echo "== Git not found, installing =="
-  sudo dnf install -y git
-fi
+install_core_packages
+install_vscode
 
 if [ ! -d "$DOTFILES_DIR/.git" ]; then
   echo "== Cloning dotfiles repository =="
@@ -43,14 +99,7 @@ cd "$WORKSTATION_DIR"
 echo "== Linking dotfiles =="
 backup_and_link "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 backup_and_link "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
-backup_and_link "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
-backup_and_link "$DOTFILES_DIR/.ssh/config" "$HOME/.ssh/config"
 
-chmod 700 "$HOME/.ssh"
-chmod 600 "$HOME/.ssh/config"
+install_vscode_extensions
 
 echo "== Bootstrap complete =="
-echo "Next steps:"
-echo "1. Log out and back in if needed"
-echo "2. Restore personal files and SSH keys from backup"
-echo "3. Test git, starship, podman, and virt-manager"
