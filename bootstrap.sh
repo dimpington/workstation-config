@@ -68,7 +68,6 @@ install_core_packages() {
     curl \
     wget \
     zsh \
-    podman \
     flatpak
 }
 
