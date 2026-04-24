@@ -40,12 +40,35 @@ Before running the bootstrap script:
 ```bash
 ssh-keygen -t ed25519 -C "your@email.com"
 ```
+Press Enter to accept defaults (no passphrase).
 
-2. Add the public key to GitHub
-3. Verify SSH access:
+2. Start the SSH agent:
+
+```
+eval "$(ssh-agent -s)"
+```
+
+3. Add SSH key to the agent:
+
+```
+ssh-add ~/.ssh/id_ed25519
+```
+
+4. Add the public key to GitHub:
+
+Settings → SSH and GPG keys → New SSH key
+
+5. Verify SSH access:
 
 ```bash
 ssh -T git@github.com
+```
+
+6. (Optional) Add SSH key bash: 
+
+```
+echo 'eval "$(ssh-agent -s)"' >> ~/.bashrc
+echo 'ssh-add ~/.ssh/id_ed25519' >> ~/.bashrc
 ```
 
 ## First boot on a fresh Fedora install
