@@ -19,7 +19,17 @@ symbol = "🌱 "
 style = "bold green"
 
 [git_status]
-style = "green"
+format = '([$all_status$ahead_behind]($style))'
+style = "bright-green"
+
+untracked = "[?](bold yellow)"
+modified = "[!](bold green)"
+staged = "[+](bold green)"
+renamed = "[»](bold green)"
+deleted = "[✘](bold green)"
+ahead = "[⇡](bold green)"
+behind = "[⇣](bold green)"
+diverged = "[⇕](bold yellow)"
 
 [username]
 style_user = "bold green"
