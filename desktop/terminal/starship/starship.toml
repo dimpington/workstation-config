@@ -1,5 +1,5 @@
 format = """
-[╭─](green)$username$hostname$directory$git_branch$git_status
+[╭─](green)$username$hostname$directory$git_branch$git_status$docker_context$container
 [╰─](green)$character
 """
 
@@ -37,5 +37,16 @@ show_always = false
 
 [hostname]
 ssh_only = true
-style = "bold green"
-format = "[@$hostname]($style) "
+ssh_symbol = "󰣀 "
+style = "bold #99ff99"
+format = "[$ssh_symbol$hostname]($style) "
+
+[docker_context]
+symbol = " "
+style = "bold #66ff66"
+format = "via [$symbol$context]($style) "
+
+[container]
+symbol = "⬢ "
+style = "bold #99ff99"
+format = "inside [$symbol$name]($style) "
