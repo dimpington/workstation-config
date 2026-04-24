@@ -71,7 +71,7 @@ echo 'eval "$(ssh-agent -s)"' >> ~/.bashrc
 echo 'ssh-add ~/.ssh/id_ed25519' >> ~/.bashrc
 ```
 
-## First boot on a fresh Fedora install
+## After Fedora installation (and prerequiesites)
 
 Run these commands:
 
