@@ -94,9 +94,11 @@ check_commands || {
 echo "== Installed Flatpak apps =="
 flatpak list || true
 
-if [[ -x ./customize-desktop.sh ]]; then
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ -x "$SCRIPT_DIR/customize-desktop.sh" ]]; then
   echo "== Running desktop customization =="
-  ./customize-desktop.sh
+  "$SCRIPT_DIR/customize-desktop.sh"
 else
   echo "== Customization script missing or not executable, skipping =="
 fi
