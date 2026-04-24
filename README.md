@@ -5,7 +5,7 @@ This repository contains the rebuild logic for my Fedora workstation.
 It is designed to work together with my separate `dotfiles` repository:
 
 - Dotfiles repo: personal configuration files
-- Workstation-config repo: system setup, bootstrap logic, package installation
+- Workstation-config repo: system setup, bootstrap logic, package installation and desktop customization
 
 ---
 
@@ -17,6 +17,17 @@ The system is designed so that:
 - The host system remains minimal
 - Configuration is version controlled
 - The machine can be rebuilt from scratch in minutes
+- The desktop environment is fully reproducible
+
+---
+
+## Architecture
+
+The setup is split into layers:
+
+- bootstrap.sh           → system bootstrap
+- setup.sh               → package installation
+- customize-desktop.sh   → UI and UX customization
 
 ---
 
@@ -70,6 +81,9 @@ cd ~/workstation-config
 	- Dev Containers
 	- Docker
 	- YAML
+	- Terraform
+	- Ansible
+	- Tasteful fallout-inspired theme
 
 ### Configuration
 
@@ -78,6 +92,65 @@ cd ~/workstation-config
 	- ~/.zshrc
 	- ~/.gitconfig
 	- ~/.config/starship.toml (if present)
+
+### Desktop Customization
+
+The system includes a dedicated customization layer:
+
+customize-desktop.sh
+├── GNOME settings
+├── VS Code configuration
+└── Terminal theming
+
+### GNOME Customization
+
+Automated via:
+
+- desktop/gnome.sh
+
+Configures:
+
+- Dark mode
+- Wallpaper
+- Dock favorites
+
+Wallpaper is stored in:
+
+**desktop/assets/wallpaper.**
+
+### VS Code Customization
+
+Automated via:
+
+- desktop/vscode.sh
+
+Includes:
+
+- Extension installation
+- Theme configuration (Fallout Pip-Boy)
+- Editor settings
+
+Configuration files:
+
+- desktop/vscode/settings.json
+- desktop/vscode-extensions.txt
+
+### Terminal Customization
+
+- Automated via:
+	- desktop/terminal.sh
+
+Includes:
+
+- Kitty terminal theme (Pip-Boy style)
+- Starship prompt configuration
+- Git-aware prompt styling
+
+Features:
+
+- Visual git status indicators
+- SSH session detection
+- Container context awareness
 
 ## Prompt configuration
 
@@ -89,12 +162,17 @@ Configuration file:
 
 This file is stored in the dotfiles repository and linked during bootstrap.
 
+Managed via:
+
+**desktop/terminal/starship/starship.toml**
+
 ## After bootstrap
 
 After bootstrap completes:
 
 1. Restart shell or log out and back in
 2. Restore personal files (if needed)
+3. Verify customization applied
 
 ## Test your environment
 
@@ -110,3 +188,4 @@ code --version
 - Minimal host system
 - Configuration stored in Git
 - Development environment isolated (containers)
+- Fully automated desktop experience
