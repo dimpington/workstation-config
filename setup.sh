@@ -94,4 +94,11 @@ check_commands || {
 echo "== Installed Flatpak apps =="
 flatpak list || true
 
+if [[ -x ./customize-desktop.sh ]]; then
+  echo "== Running desktop customization =="
+  ./customize-desktop.sh
+else
+  echo "== Customization script missing or not executable, skipping =="
+fi
+
 echo "== Setup complete =="
