@@ -4,3 +4,4 @@ ms-azuretools.vscode-containers
 redhat.vscode-yaml
 HashiCorp.terraform
 redhat.ansible
+FcGod.fallout-pip-boy-theme

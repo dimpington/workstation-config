@@ -1,8 +1,14 @@
 {
-  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.colorTheme": "Fallout Pip-Boy Theme",
   "editor.fontSize": 14,
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "terminal.integrated.defaultProfile.linux": "zsh",
-  "redhat.telemetry.enabled": false
+
+  "editor.cursorBlinking": "solid",
+  "editor.cursorStyle": "block",
+  "editor.fontFamily": "monospace",
+
+  "workbench.startupEditor": "none",
+  "terminal.integrated.fontSize": 13
 }
