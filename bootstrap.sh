@@ -18,10 +18,8 @@ echo "== Log file: $LOG_FILE =="
 # SSH Key Check
 # -------------------------
 if [ ! -f "$HOME/.ssh/id_ed25519.pub" ]; then
-  echo "SSH key not found."
-  echo 'Generate one with:'
-  echo '  ssh-keygen -t ed25519 -C "edaunfelt@protonmail.com"'
-  echo "Then add it to GitHub before running bootstrap."
+  echo "SSH key not found or not configured."
+  echo "Follow README SSH setup before running bootstrap."
   exit 1
 fi
 
