@@ -102,10 +102,10 @@ Links configuration files:
 
 The system includes a dedicated customization layer:
 
-customize-desktop.sh
-├── GNOME settings
-├── VS Code configuration
-└── Terminal theming
+- customize-desktop.sh
+	- GNOME settings
+	- VS Code configuration
+	- Terminal theming
 
 ### GNOME Customization
 
