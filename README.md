@@ -66,32 +66,37 @@ cd ~/workstation-config
 
 ### Core system setup
 
-- Installs core packages:
-	- git
-	- curl
-	- wget
-	- zsh
-	- podman
+Installs core packages:
+
+- git
+- curl
+- wget
+- zsh
+- podman
 
 ### Development environment
 
-- Installs Visual Studio Code from Microsoft repository
-- Installs VS Code extensions:
-	- Remote SSH
-	- Dev Containers
-	- Docker
-	- YAML
-	- Terraform
-	- Ansible
-	- Tasteful fallout-inspired theme
+Installs Visual Studio Code from Microsoft repository
+
+Installs VS Code extensions:
+
+- Remote SSH
+- Dev Containers
+- Docker
+- YAML
+- Terraform
+- Ansible
+- Tasteful fallout-inspired theme
 
 ### Configuration
 
-- Clones the dotfiles repository
-- Links configuration files:
-	- ~/.zshrc
-	- ~/.gitconfig
-	- ~/.config/starship.toml (if present)
+Clones the dotfiles repository
+
+Links configuration files:
+
+- ~/.zshrc
+- ~/.gitconfig
+- ~/.config/starship.toml (if present)
 
 ### Desktop Customization
 
@@ -137,8 +142,8 @@ Configuration files:
 
 ### Terminal Customization
 
-- Automated via:
-	- desktop/terminal.sh
+Automated via:
+- desktop/terminal.sh
 
 Includes:
 
