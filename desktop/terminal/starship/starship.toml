@@ -1,0 +1,31 @@
+format = """
+[╭─](green)$username$hostname$directory$git_branch$git_status
+[╰─](green)$character
+"""
+
+add_newline = true
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+
+[directory]
+style = "bold green"
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+symbol = "🌱 "
+style = "bold green"
+
+[git_status]
+style = "green"
+
+[username]
+style_user = "bold green"
+show_always = false
+
+[hostname]
+ssh_only = true
+style = "bold green"
+format = "[@$hostname]($style) "
