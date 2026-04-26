@@ -1,5 +1,5 @@
 format = """
-[╭─](bold #9BBC0F)$username$hostname$directory$git_branch$git_status$cmd_duration
+[╭─](bold #9BBC0F)$username$hostname$directory$git_branch$git_status$cmd_duration$time$battery
 [╰─](bold #9BBC0F)$character
 """
 
