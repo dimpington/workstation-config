@@ -58,3 +58,10 @@ format = "took [$duration]($style) "
 success_symbol = "[➜](bold pip_green)"
 error_symbol = "[➜](bold danger)"
 vimcmd_symbol = "[V](bold vault_yellow)"
+
+[time]
+disabled = false
+format = "[$time](dimmed white) "
+
+[battery]
+disabled = false
