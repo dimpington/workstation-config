@@ -1,0 +1,60 @@
+format = """
+[╭─](bold #9BBC0F)$username$hostname$directory$git_branch$git_status$cmd_duration
+[╰─](bold #9BBC0F)$character
+"""
+
+palette = "fallout"
+
+[palettes.fallout]
+pip_green = "#9BBC0F"
+vault_yellow = "#F6D365"
+rust = "#C26B2E"
+danger = "#FF5555"
+muted = "#5F7F3A"
+
+[username]
+style_user = "bold pip_green"
+style_root = "bold danger"
+format = "[$user]($style)"
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = false
+style = "bold muted"
+format = "[@$hostname]($style) "
+
+[directory]
+style = "bold vault_yellow"
+format = "[$path]($style) "
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+symbol = "🌱 "
+style = "bold pip_green"
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+style = "bold rust"
+format = "[$all_status$ahead_behind]($style) "
+conflicted = "⚔ "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+untracked = "?${count} "
+stashed = "≡${count} "
+modified = "!${count} "
+staged = "+${count} "
+renamed = "»${count} "
+deleted = "✘${count} "
+
+[cmd_duration]
+min_time = 1000
+style = "bold muted"
+format = "took [$duration]($style) "
+
+[character]
+success_symbol = "[➜](bold pip_green)"
+error_symbol = "[➜](bold danger)"
+vimcmd_symbol = "[V](bold vault_yellow)"
