@@ -31,11 +31,9 @@ if ! dnf repoquery --available hyprland \
     exit 1
 fi
 
-# Install Hyprland
-sudo dnf install -y hyprland
-
-# Install supporting utilities
+# Required Hyprland packages
 PACKAGES=(
+    hyprland
     waybar
     kitty
     fuzzel
@@ -47,10 +45,20 @@ PACKAGES=(
     playerctl
     pavucontrol
     xorg-x11-server-Xwayland
+    jetbrains-mono-fonts
 )
 
-echo "== Installing desktop utilities =="
+echo "== Checking required Hyprland packages =="
 
+for package in "${PACKAGES[@]}"; do
+    if ! dnf repoquery --available "$package" \
+        --qf '%{name}' 2>/dev/null | grep -qx "$package"; then
+        echo "ERROR: Required package unavailable: $package"
+        exit 1
+    fi
+done
+
+echo "== Installing Hyprland and desktop utilities =="
 sudo dnf install -y "${PACKAGES[@]}"
 
 # Check optional Hyprland components

@@ -32,14 +32,16 @@ case "$DESKTOP" in
     ;;
 esac
 
-PACKAGES_FILE="packages-base.txt"
-FLATPAKS_FILE="flatpaks.txt"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+PACKAGES_FILE="$SCRIPT_DIR/packages-base.txt"
+FLATPAKS_FILE="$SCRIPT_DIR/flatpaks.txt"
 
 echo "== Updating system =="
 sudo dnf update -y
 
 echo "== Installing DNF packages from $PACKAGES_FILE =="
-mapfile -t dnf_packages < <(grep -vE '^\s*$|^\s*#' "$PACKAGES_FILE")
+mapfile -t dnf_packages < <(grep -vE '^[[:space:]]*($|#)' "$PACKAGES_FILE")
 
 if [ "${#dnf_packages[@]}" -gt 0 ]; then
   sudo dnf install -y "${dnf_packages[@]}"
@@ -63,7 +65,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 
 if [ -s "$FLATPAKS_FILE" ]; then
   echo "== Installing Flatpak apps from $FLATPAKS_FILE =="
-  mapfile -t flatpak_apps < <(grep -vE '^\s*$|^\s*#' "$FLATPAKS_FILE")
+  mapfile -t flatpak_apps < <(grep -vE '^[[:space:]]*($|#)' "$FLATPAKS_FILE")
 
   if [ "${#flatpak_apps[@]}" -gt 0 ]; then
     flatpak install -y flathub "${flatpak_apps[@]}"
@@ -82,6 +84,16 @@ else
   echo "== Starship already installed, skipping =="
 fi
 
+echo "== Installed Flatpak apps =="
+flatpak list || true
+
+# Install Hyprland when requested
+if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
+  echo "== Installing Hyprland environment =="
+
+  bash "$SCRIPT_DIR/desktop/hyprland.sh"
+fi
+
 echo "== Verifying installed commands =="
 
 check_commands() {
@@ -96,7 +108,6 @@ check_commands() {
     nvim
     tmux
     bat
-    kitty
     podman
     virt-manager
     virsh
@@ -104,6 +115,10 @@ check_commands() {
     flatpak
     code
   )
+
+  if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
+  commands+=(kitty hyprland waybar fuzzel)
+fi
 
   for cmd in "${commands[@]}"; do
     if command -v "$cmd" >/dev/null 2>&1; then
@@ -121,17 +136,6 @@ check_commands || {
   echo "== One or more expected commands are missing =="
   exit 1
 }
-
-echo "== Installed Flatpak apps =="
-flatpak list || true
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Install selected desktop environment
-if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
-    echo "== Installing Hyprland environment =="
-    bash "$SCRIPT_DIR/desktop/hyprland.sh"
-fi
 
 if [[ -f "$SCRIPT_DIR/customize-desktop.sh" ]]; then
   echo "== Running desktop customization =="

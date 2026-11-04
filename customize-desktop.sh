@@ -52,13 +52,6 @@ esac
 bash "$SCRIPT_DIR/desktop/vscode.sh"
 bash "$SCRIPT_DIR/desktop/terminal.sh"
 
-# Zsh configuration
-if [[ -f "$SCRIPT_DIR/dotfiles/.zshrc" ]]; then
-  cp "$SCRIPT_DIR/dotfiles/.zshrc" "$HOME/.zshrc"
-else
-  echo "WARNING: Local .zshrc not found; skipping copy"
-fi
-
 # Set Zsh as default shell
 ZSH_PATH="$(command -v zsh || true)"
 

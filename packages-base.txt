@@ -10,7 +10,6 @@ ripgrep
 fd-find
 bat
 zsh
-kitty
 podman
 virt-manager
 virt-install
