@@ -1,6 +1,36 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Desktop selection (default: GNOME)
+DESKTOP="gnome"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --desktop)
+      if [[ $# -lt 2 ]]; then
+        echo "ERROR: --desktop requires a value"
+        exit 1
+      fi
+      DESKTOP="$2"
+      shift 2
+      ;;
+    *)
+      echo "ERROR: Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
+
+case "$DESKTOP" in
+  gnome|hyprland|both)
+    echo "== Selected desktop: $DESKTOP =="
+    ;;
+  *)
+    echo "ERROR: Invalid desktop: $DESKTOP"
+    exit 1
+    ;;
+esac
+
 DOTFILES_REPO="git@github.com:dimpington/dotfiles.git"
 DOTFILES_DIR="$HOME/dotfiles"
 BACKUP_DIR="$HOME/config-backup"
@@ -97,9 +127,9 @@ else
   echo "== Dotfiles repo already exists at $DOTFILES_DIR =="
 fi
 
-echo "== Running setup.sh =="
+echo "== Running setup.sh for desktop: $DESKTOP =="
 cd "$WORKSTATION_DIR"
-bash ./setup.sh
+bash ./setup.sh --desktop "$DESKTOP"
 
 echo "== Linking dotfiles =="
 backup_and_link "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"

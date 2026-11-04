@@ -1,6 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Desktop environment selection
+DESKTOP="gnome"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --desktop)
+      if [[ $# -lt 2 ]]; then
+        echo "ERROR: --desktop requires a value"
+        exit 1
+      fi
+      DESKTOP="$2"
+      shift 2
+      ;;
+    *)
+      echo "ERROR: Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
+
+case "$DESKTOP" in
+  gnome|hyprland|both)
+    echo "== Selected desktop: $DESKTOP =="
+    ;;
+  *)
+    echo "ERROR: Invalid desktop: $DESKTOP"
+    echo "Valid options: gnome, hyprland, both"
+    exit 1
+    ;;
+esac
+
 PACKAGES_FILE="packages-base.txt"
 FLATPAKS_FILE="flatpaks.txt"
 
@@ -96,11 +127,19 @@ flatpak list || true
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ -x "$SCRIPT_DIR/customize-desktop.sh" ]]; then
+# Install selected desktop environment
+if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
+    echo "== Installing Hyprland environment =="
+    bash "$SCRIPT_DIR/desktop/hyprland.sh"
+fi
+
+if [[ -f "$SCRIPT_DIR/customize-desktop.sh" ]]; then
   echo "== Running desktop customization =="
-  "$SCRIPT_DIR/customize-desktop.sh"
+
+  bash "$SCRIPT_DIR/customize-desktop.sh" --desktop "$DESKTOP"
 else
-  echo "== Customization script missing or not executable, skipping =="
+  echo "ERROR: customize-desktop.sh not found"
+  exit 1
 fi
 
 echo "== Setup complete =="
