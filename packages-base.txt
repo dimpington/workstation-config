@@ -6,6 +6,7 @@ btop
 fastfetch
 neovim
 tmux
+kitty
 ripgrep
 fd-find
 bat

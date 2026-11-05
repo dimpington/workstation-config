@@ -1,37 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Desktop environment selection
-DESKTOP="gnome"
-
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --desktop)
-      if [[ $# -lt 2 ]]; then
-        echo "ERROR: --desktop requires a value"
-        exit 1
-      fi
-      DESKTOP="$2"
-      shift 2
-      ;;
-    *)
-      echo "ERROR: Unknown argument: $1"
-      exit 1
-      ;;
-  esac
-done
-
-case "$DESKTOP" in
-  gnome|hyprland|both)
-    echo "== Selected desktop: $DESKTOP =="
-    ;;
-  *)
-    echo "ERROR: Invalid desktop: $DESKTOP"
-    echo "Valid options: gnome, hyprland, both"
-    exit 1
-    ;;
-esac
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 PACKAGES_FILE="$SCRIPT_DIR/packages-base.txt"
@@ -87,13 +56,6 @@ fi
 echo "== Installed Flatpak apps =="
 flatpak list || true
 
-# Install Hyprland when requested
-if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
-  echo "== Installing Hyprland environment =="
-
-  bash "$SCRIPT_DIR/desktop/hyprland.sh"
-fi
-
 echo "== Verifying installed commands =="
 
 check_commands() {
@@ -107,6 +69,7 @@ check_commands() {
     fastfetch
     nvim
     tmux
+    kitty
     bat
     podman
     virt-manager
@@ -115,10 +78,6 @@ check_commands() {
     flatpak
     code
   )
-
-  if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
-  commands+=(kitty hyprland waybar fuzzel)
-fi
 
   for cmd in "${commands[@]}"; do
     if command -v "$cmd" >/dev/null 2>&1; then
@@ -140,7 +99,7 @@ check_commands || {
 if [[ -f "$SCRIPT_DIR/customize-desktop.sh" ]]; then
   echo "== Running desktop customization =="
 
-  bash "$SCRIPT_DIR/customize-desktop.sh" --desktop "$DESKTOP"
+  bash "$SCRIPT_DIR/customize-desktop.sh"
 else
   echo "ERROR: customize-desktop.sh not found"
   exit 1

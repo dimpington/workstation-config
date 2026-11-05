@@ -1,31 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "== Configuring terminal environment =="
 
-echo "== Customizing terminal =="
+# Terminal configuration files are managed by the dotfiles repository.
+# bootstrap.sh links Kitty, Starship, and Zsh configuration.
 
-# Kitty
-mkdir -p "$HOME/.config/kitty"
-cp "$SCRIPT_DIR/terminal/kitty/kitty.conf" "$HOME/.config/kitty/kitty.conf"
-
-# Starship
-mkdir -p "$HOME/.config"
-cp "$SCRIPT_DIR/terminal/starship/starship.toml" "$HOME/.config/starship.toml"
-
-# Zsh config
-if [[ -f "$SCRIPT_DIR/terminal/zsh/.zshrc" ]]; then
-  cp "$SCRIPT_DIR/terminal/zsh/.zshrc" "$HOME/.zshrc"
-fi
-
-# Set zsh as default shell
+# Set Zsh as the default shell
 if command -v zsh >/dev/null 2>&1; then
-  if [[ "$SHELL" != "$(command -v zsh)" ]]; then
-    chsh -s "$(command -v zsh)"
-    echo "Default shell changed to zsh. Log out and back in for it to apply."
+  ZSH_PATH="$(command -v zsh)"
+
+  if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+    chsh -s "$ZSH_PATH"
+    echo "Default shell changed to Zsh. Log out and back in for it to apply."
   fi
 else
-  echo "zsh is not installed. Skipping default shell change."
+  echo "Zsh is not installed. Skipping default shell change."
 fi
 
-echo "== Terminal customization complete =="
+echo "== Terminal environment configured =="

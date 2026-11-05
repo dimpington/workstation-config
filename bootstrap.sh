@@ -1,43 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Desktop selection (default: GNOME)
-DESKTOP="gnome"
-
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --desktop)
-      if [[ $# -lt 2 ]]; then
-        echo "ERROR: --desktop requires a value"
-        exit 1
-      fi
-      DESKTOP="$2"
-      shift 2
-      ;;
-    *)
-      echo "ERROR: Unknown argument: $1"
-      exit 1
-      ;;
-  esac
-done
-
-case "$DESKTOP" in
-  gnome|hyprland|both)
-    echo "== Selected desktop: $DESKTOP =="
-    ;;
-  *)
-    echo "ERROR: Invalid desktop: $DESKTOP"
-    exit 1
-    ;;
-esac
-
 DOTFILES_REPO="git@github.com:dimpington/dotfiles.git"
 DOTFILES_DIR="$HOME/dotfiles"
-# Select matching dotfiles branch for desktop profile
-DOTFILES_BRANCH="main"
-if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
-  DOTFILES_BRANCH="feature/fedora45-hyprland"
-fi
+# Development branch until GNOME-only setup is validated
+DOTFILES_BRANCH="feature/fedora45-hyprland"
 BACKUP_DIR="$HOME/config-backup"
 # Locate this repository automatically
 WORKSTATION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -162,11 +129,10 @@ else
   fi
 fi
 
-
 # Run workstation setup
-echo "== Running setup.sh for desktop: $DESKTOP =="
+echo "== Running GNOME workstation setup =="
 cd "$WORKSTATION_DIR"
-bash ./setup.sh --desktop "$DESKTOP"
+bash ./setup.sh
 
 # Link personal dotfiles
 echo "== Linking dotfiles =="
@@ -176,21 +142,9 @@ backup_and_link "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
 # Ensure configuration directory exists
 mkdir -p "$HOME/.config"
 
-# Link Hyprland desktop configurations
-if [[ "$DESKTOP" == "hyprland" || "$DESKTOP" == "both" ]]; then
-  echo "== Linking Hyprland desktop configuration =="
-
-  for component in hypr waybar kitty fuzzel; do
-    source_dir="$DOTFILES_DIR/.config/$component"
-    target_dir="$HOME/.config/$component"
-
-    if [[ ! -d "$source_dir" ]]; then
-      echo "ERROR: Missing configuration directory: $source_dir"
-      exit 1
-    fi
-
-    backup_and_link "$source_dir" "$target_dir"
-  done
+# Link Kitty terminal configuration
+if [[ -d "$DOTFILES_DIR/.config/kitty" ]]; then
+  backup_and_link "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
 fi
 
 # Link Starship configuration

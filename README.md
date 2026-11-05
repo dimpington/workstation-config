@@ -40,7 +40,7 @@ Before running the bootstrap script:
 ```bash
 ssh-keygen -t ed25519 -C "your@email.com"
 ```
-Press Enter to accept defaults (no passphrase).
+Accept the default key location and choose a strong passphrase.
 
 2. Start the SSH agent:
 
@@ -79,7 +79,8 @@ Run these commands:
 sudo dnf update -y
 sudo dnf install -y git
 
-git clone git@github.com:dimpington/workstation-config.git ~/workstation-config
+git clone --branch feature/fedora45-hyprland \
+  git@github.com:dimpington/workstation-config.git ~/workstation-config
 cd ~/workstation-config
 
 ./bootstrap.sh
@@ -120,6 +121,7 @@ Links configuration files:
 - ~/.zshrc
 - ~/.gitconfig
 - ~/.config/starship.toml (if present)
+- ~/.config/kitty (if present)
 
 ### Desktop Customization
 
@@ -186,13 +188,13 @@ The shell prompt is powered by Starship.
 
 Configuration file:
 
-**~/.config/starship.tom**
+**~/.config/starship.toml**
 
 This file is stored in the dotfiles repository and linked during bootstrap.
 
 Managed via:
 
-**desktop/terminal/starship/starship.toml**
+**dotfiles/.config/starship.toml**
 
 ## After bootstrap
 
